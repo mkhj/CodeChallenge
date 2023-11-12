@@ -31,6 +31,6 @@ steps:
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    configuration: '$(buildConfiguration)' 
 
- task: PublishBuildArtifacts@1 
+- task: PublishBuildArtifacts@1
