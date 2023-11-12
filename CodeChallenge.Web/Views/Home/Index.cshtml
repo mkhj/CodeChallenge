@@ -1,0 +1,57 @@
+﻿@model CodeChallenge.Web.Controllers.TaskViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="">
+
+    <form id="frmCode" asp-controller="Home" asp-action="Validate" method="post">
+        <div class="form-group">
+            <button id="btnSubmit" type="submit" class="btn btn-primary btn-lg btn-block">Submit Answer</button>
+        </div>
+        <div class="form-group">
+            <input name="id" type="hidden" value="@Model.Id" />
+            <textarea id="answer" name="answer" class="form-control" id="exampleFormControlTextarea1" rows="30">@Model.CodeTemplate</textarea>
+        </div>
+
+    </form>
+
+</div>
+<script>
+    $(document).ready(function () {
+
+        $("#frmCode").on("submit", function (e) {
+            e.preventDefault();
+            $('#btnSubmit').attr('disabled', 'disabled');
+            var url = $(this).attr("action");
+            var formData = $(this).serialize();
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: formData,
+                dataType: "json",
+                success: function (response) {
+                    console.log(response)
+                    //alert(JSON.stringify(response));
+
+                    if (response.status && response.completed) { // Completed the game
+                        $('#id').val("")
+                        $('#answer').val("")
+                    } else if (response.status) {   // Next Question
+                        $('#id').val(response.task.id)
+                        $('#answer').val(response.task.codeTemplate)
+                    } 
+
+                    alert(response.statusMessage);
+                },
+                error: function (response) {
+                    alert(response.statusMessage);
+                },
+                complete: function () {
+                    $('#btnSubmit').removeAttr('disabled');
+                }
+            })
+        });
+
+    });
+</script>

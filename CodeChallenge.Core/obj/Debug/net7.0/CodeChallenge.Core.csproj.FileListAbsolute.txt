@@ -1,0 +1,12 @@
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/bin/Debug/net7.0/CodeChallenge.Core.deps.json
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/bin/Debug/net7.0/CodeChallenge.Core.dll
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/bin/Debug/net7.0/CodeChallenge.Core.pdb
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/CodeChallenge.Core.csproj.AssemblyReference.cache
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/CodeChallenge.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/CodeChallenge.Core.AssemblyInfoInputs.cache
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/CodeChallenge.Core.AssemblyInfo.cs
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/CodeChallenge.Core.csproj.CoreCompileInputs.cache
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/CodeChallenge.Core.dll
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/refint/CodeChallenge.Core.dll
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/CodeChallenge.Core.pdb
+/Users/markjensen/Documents/GitHub/CodeChallenge/CodeChallenge.Core/obj/Debug/net7.0/ref/CodeChallenge.Core.dll
