@@ -31,7 +31,6 @@
                 data: formData,
                 dataType: "json",
                 success: function (response) {
-                    console.log(response)
                     //alert(JSON.stringify(response));
 
                     if (response.status && response.completed) { // Completed the game
@@ -47,7 +46,12 @@
                 error: function (response) {
                     alert(response.statusMessage);
                 },
-                complete: function () {
+                complete: function (response) {
+                    console.log(response.responseJSON)
+                    if (response.responseJSON.completed) {
+                        return;
+                    }
+
                     $('#btnSubmit').removeAttr('disabled');
                 }
             })

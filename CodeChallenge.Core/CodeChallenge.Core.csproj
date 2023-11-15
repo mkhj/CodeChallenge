@@ -7,10 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Tasks\" />
+    <None Remove="Compiler\" />
+    <None Remove="Helpers\" />
+    <None Remove="Questions\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tasks\" />
+    <Folder Include="Compiler\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Questions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis" Version="4.7.0" />

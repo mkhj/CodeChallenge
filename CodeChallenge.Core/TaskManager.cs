@@ -1,184 +1,240 @@
-﻿using System.Reflection;
-using CodeChallenge.Core.Tasks;
-using CodeChallenge.Tasks;
+﻿using CodeChallenge.Core.Compiler;
+using CodeChallenge.Core.Questions;
+using CodeChallenge.Questions;
+using CodeChallenge.Web.Helpers;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Emit;
-using Microsoft.CodeAnalysis.Text;
 
-namespace CodeChallenge.Core;
-
-public class TaskManager
-{
-    private List<BaseTask> tasks;
-
-    private BaseTask currentTask;
-
-    public TaskManager()
-    {
-        this.tasks = new List<BaseTask>();
-
-        tasks.Add(new FactorialTask() { Id = 1 });
-        tasks.Add(new FindAverageTask() { Id = 2 });
-
-    }
-
-    public bool HasMoreTasks
-    {
-        get
-        {
-            return tasks.Count > 0;
-        }
-    }
-
-    public BaseTask GetNewTask()
-    {
-        currentTask = tasks[0];
-
-        tasks.Remove(currentTask);
-
-        return currentTask;
-    }
-
-    public BaseTask GetTaskById(int id)
-    {
-        return tasks.Find(x => x.Id == id);
-    }
-
-    public TaskResult ValidateTask(int taskId, string answer)
-    {
-        var task = currentTask; // GetTaskById(taskId);
-        if(task == null)
-        {
-            return new TaskResult()
-            {
-                Status = false,
-                StatusMessage = "Task is null"
-            };
-        }
-
-        var result = Compiler.BuildAndRun(answer, task);
-        if (!result.Success) // Compiler error
-        {
-            return new TaskResult()
-            {
-                Status = false,
-                StatusMessage = string.Join(", ", result.GetErrors())
-            };
-        }
-
-        var correctResult = task.ValidateResult(result.Output);
-        if (!correctResult)
-        {
-            return new TaskResult()
-            {
-                Status = false,
-                StatusMessage = "Incorrect, try again"
-            };
-        }
-
-        return new TaskResult()
-        {
-            Status = true,
-            StatusMessage = "Yesssir!!"
-        };
-    }
-}
-
-public class TaskResult
-{
-    public bool Status { get; set; }
-    public string? StatusMessage { get; set; }
-
-}
-
-
-public class CompileResult
-{
-    private List<string> errors = new List<string>();
-
-    public bool Success
-    {
-        get { return errors.Count == 0; }
-    }
-
-    public object? Output { get; set; }
-
-    public void AddError(string error)
-    {
-        errors.Add(error);
-    }
-
-    public List<string> GetErrors()
-    {
-        return errors;
-    }
-
-
-}
-
-public static class Compiler
+namespace CodeChallenge.Core
 {
 
-    public static CompileResult BuildAndRun(string code, BaseTask task)
+    public interface IQuizSessionManager
     {
+        public T GetObject<T>(string key);
+        public void SetObject(string key, object data);
+    }
 
-        // Set up the compilation options
-        var compilationOptions = new CSharpCompilationOptions(
-             OutputKind.DynamicallyLinkedLibrary,
-             optimizationLevel: OptimizationLevel.Release
 
-        );
+    public class QuizManager
+    {
+        private List<BaseQuestion> _questions;
+        private IQuizSessionManager _sessionManager;
 
-        // Add necessary references
-        var references = new[]
+        private const string QUIZ_QUESTION_IDS_SESSION_KEY = "quiz_question_ids";
+        private const string QUIZ_CURRENT_QUESTION_ID = "quiz_current_question_id";
+        private const string QUIZ_ACTIVE_QUESTION_SESSION_KEY = "quiz_active_questions_id";
+        private const string QUIZ_IN_PROGRESS_SESSION_KEY = "quiz_in_progress";
+
+
+        private QuizManager(List<BaseQuestion> questions, IQuizSessionManager session)
         {
-            MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(System.Console).Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(System.Runtime.AssemblyTargetedPatchBandAttribute).Assembly.Location),
-            MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location)
-        };
+            _questions = questions;
+            _sessionManager = session;
+        }
 
-        // Compile the code
-        //var codeString = SourceText.From(task.GetTaskTemplate());
-        var syntaxTree = SyntaxFactory.ParseSyntaxTree(code);
-
-        var compilation = CSharpCompilation.Create("LibraryAssembly")
-            .WithOptions(compilationOptions)
-            .AddReferences(references)
-            .AddSyntaxTrees(syntaxTree);
-
-
-        var compileResult = new CompileResult();
-
-        using var ms = new MemoryStream();
-
-        var emitResult = compilation.Emit(ms);
-
-        // Handle compilation errors
-        var compilerErrors = !emitResult.Success;
-        if (compilerErrors)
+        /// <summary>
+        /// Factory Method
+        /// </summary>
+        /// <returns></returns>
+        public static QuizManager Create(IQuizSessionManager sessionManager)
         {
-            foreach (var diagnostic in emitResult.Diagnostics)
+            if(sessionManager == null)
             {
-                compileResult.AddError(diagnostic.ToString());
+                throw new ArgumentNullException("SessionManager cannot be null");
             }
 
-            return compileResult;
+            var questions = new List<BaseQuestion>
+            {
+                new FactorialQuestion() { Id = 1 },
+                new AverageQuestion() { Id = 2 },
+                new FrequenceQuestion() { Id = 3 }
+            };
+
+            var quizManager = new QuizManager(questions, sessionManager);
+            return quizManager;
         }
 
-        ms.Seek(0, SeekOrigin.Begin);
+        /// <summary>
+        /// Current quiz questions
+        /// </summary>
+        public List<int> QuizQuestionIds
+        {
+            get
+            {
+                var value = _sessionManager.GetObject<List<int>>(QUIZ_QUESTION_IDS_SESSION_KEY);
+                if(value == null)
+                {
+                    value = new List<int>();
+                }
 
-        // Load the compiled assembly
-        var assembly = Assembly.Load(ms.ToArray());
+                return value;
+            }
+            private set
+            {
+                _sessionManager.SetObject(QUIZ_QUESTION_IDS_SESSION_KEY, value);
+            }
+        }
 
-        // Execute the library code
-        var libraryClassType = assembly.GetType("CodeChallenge");
-        var libraryInstance = Activator.CreateInstance(libraryClassType);
+        public bool QuizInProgress
+        {
+            get
+            {
+                var value = _sessionManager.GetObject<bool>(QUIZ_IN_PROGRESS_SESSION_KEY);
+                if(value == null)
+                {
+                    value = false;
+                }
 
-        var libraryMethod = libraryClassType.GetMethod(task.Name); // ("Factorial");
-        compileResult.Output = libraryMethod.Invoke(libraryInstance, task.GetArguments());
+                return value;
+            }
+            private set
+            {
+                _sessionManager.SetObject(QUIZ_IN_PROGRESS_SESSION_KEY, value);
+            }
+        }
 
-        return compileResult;
+        public bool IsLastQuestion
+        {
+            get
+            {
+                return QuizQuestionIds[QuizQuestionIds.Count - 1] == CurrentQuizId;
+            }
+        }
+
+        public int CurrentQuizId
+        {
+            get
+            {
+                return _sessionManager.GetObject<int>(QUIZ_CURRENT_QUESTION_ID);
+            }
+            private set
+            {
+                _sessionManager.SetObject(QUIZ_CURRENT_QUESTION_ID, value);
+            }
+        }
+
+        /// <summary>
+        /// Generates a new quiz with questions in random order
+        /// </summary>
+        /// <returns></returns>
+        public List<int> GenerateNewQuiz()
+        {
+            if (QuizInProgress)
+            {
+                return QuizQuestionIds;
+            }
+
+            // Randomize challenges
+            var ids = _questions.Select(x => x.Id).ToList();
+            ids.Shuffle<int>();
+
+            QuizQuestionIds = ids;
+
+            QuizInProgress = true;
+
+            CurrentQuizId = QuizQuestionIds[0];
+
+            return QuizQuestionIds;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void FinalizeQuiz()
+        {
+            QuizInProgress = false;
+        }
+
+        public BaseQuestion? GetFirstQuestion()
+        {
+            return GetQuestionById(CurrentQuizId);
+        }
+
+        public BaseQuestion? GetNextQuestion()
+        {
+            var currentIndex = QuizQuestionIds.IndexOf(CurrentQuizId);
+            if(currentIndex == -1)
+            {
+                return null;
+            }
+
+            if (IsLastQuestion)
+            {
+                return null;
+            }
+
+            var nextIndex = currentIndex + 1;
+            var nextQuestionId = QuizQuestionIds[nextIndex];
+            var nextQuestion = GetQuestionById(nextQuestionId);
+
+            CurrentQuizId = nextQuestion.Id;
+
+            return nextQuestion;
+        }
+
+
+        public BaseQuestion? GetQuestionById(int id)
+        {
+            var task = _questions.Find(x => x.Id == id);
+            return task;
+        }
+
+        public TaskResult ValidateAnswer(string answer)
+        {
+            var currentTask = GetQuestionById(CurrentQuizId);
+            if (currentTask == null)
+            {
+                return new TaskResult()
+                {
+                    Status = false,
+                    StatusMessage = "Task is null"
+                };
+            }
+
+            var buildResult = Compiler.Compiler.BuildSolution(answer);
+            if (!buildResult.Success) // Are there any compiler errors?
+            {
+                return new TaskResult()
+                {
+                    Status = false,
+                    StatusMessage = string.Join(", ", buildResult.GetErrors())
+                };
+            }
+
+            var output = Runner.InvokeSolution(buildResult.GetAssembly(), currentTask.MethodToInvoke, currentTask.GetArguments());
+
+            var correctResult = currentTask.ValidateResult(output);
+            if (!correctResult) // Did the provided solution give the expected output?
+            {
+                return new TaskResult()
+                {
+                    Status = false,
+                    StatusMessage = "Incorrect, try again"
+                };
+            }
+
+            // Solution gave the right output
+            return new TaskResult()
+            {
+                Status = true,
+                StatusMessage = "Yesssir!!"
+            };
+        }
     }
-};
+
+    public class TaskResult
+    {
+        public bool Status { get; set; }
+        public string? StatusMessage { get; set; }
+
+    }
+
+}
+
+
+
+
+
+
+
+
+

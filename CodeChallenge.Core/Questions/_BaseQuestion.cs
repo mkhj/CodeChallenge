@@ -1,13 +1,13 @@
 ﻿using System;
 
-namespace CodeChallenge.Tasks
+namespace CodeChallenge.Questions
 {
 
-    public abstract class BaseTask
+    public abstract class BaseQuestion
     {
         public int Id { get; set; }
 
-        public abstract string Name { get; }
+        public abstract string MethodToInvoke { get; }
 
         public abstract string GetTaskTemplate();
 

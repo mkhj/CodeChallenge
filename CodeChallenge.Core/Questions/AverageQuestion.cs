@@ -1,17 +1,17 @@
 ﻿using System;
-using CodeChallenge.Tasks;
+using CodeChallenge.Questions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace CodeChallenge.Core.Tasks
+namespace CodeChallenge.Core.Questions
 {
-	public class FindAverageTask : BaseTask
+	public class AverageQuestion : BaseQuestion
 	{
         private new object[] arguments;
 
-        public override string Name => "FindAverage";
+        public override string MethodToInvoke => "Average";
 
 
-        public FindAverageTask()
+        public AverageQuestion()
 		{
             arguments = new object[] { new int[] { 1, 2, 3, 4, 5 } };
         }
@@ -23,15 +23,14 @@ namespace CodeChallenge.Core.Tasks
 
         public override string GetTaskTemplate()
         {
-            return @"
-using System;
+            return @"using System;
+
 public class CodeChallenge
 {
-
     /// <summary>
-    /// Find gennemsnittet
+    /// Find the average of all the numbers from the input.
     /// </summary>
-    public int FindAverage(int[] numbers)
+    public int Average(int[] numbers)
     {
 
     }

@@ -1,19 +1,18 @@
-﻿namespace CodeChallenge.Tasks
+﻿namespace CodeChallenge.Questions
 {
-    public class FactorialTask : BaseTask
+    public class FactorialQuestion : BaseQuestion
     {
 
-        public override string Name => "Factorial";
+        public override string MethodToInvoke => "Factorial";
 
         public override string GetTaskTemplate()
         {
-            return @"
-using System;
+            return @"using System;
 
 public class CodeChallenge
 {
     /// <summary>
-    /// Findet Factorial af tallene op til og med number f.eks. Input: 5 Output: 120 
+    /// Find the factorial of the input. For example, factorial of 3 is 3 * 2 * 1 which equals to 6
     /// </summary>
     public long Factorial(int number)
     {
