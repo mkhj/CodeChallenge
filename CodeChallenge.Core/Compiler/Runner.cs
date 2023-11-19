@@ -11,7 +11,7 @@ namespace CodeChallenge.Core.Compiler
             var libraryClassType = assembly.GetType("CodeChallenge");
             var libraryInstance = Activator.CreateInstance(libraryClassType);
 
-            var libraryMethod = libraryClassType.GetMethod(method); // ("Factorial");
+            var libraryMethod = libraryClassType.GetMethod(method); 
             var output = libraryMethod.Invoke(libraryInstance, arguments);
 
             return output;
