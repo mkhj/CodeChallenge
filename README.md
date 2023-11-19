@@ -1,1 +1,2 @@
 # CodeChallenge
+![Screenshot](screenshot.png)
