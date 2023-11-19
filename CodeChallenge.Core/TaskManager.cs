@@ -37,7 +37,7 @@ namespace CodeChallenge.Core
         /// <returns></returns>
         public static QuizManager Create(IQuizSessionManager sessionManager)
         {
-            if(sessionManager == null)
+            if (sessionManager == null)
             {
                 throw new ArgumentNullException("SessionManager cannot be null");
             }
@@ -46,7 +46,9 @@ namespace CodeChallenge.Core
             {
                 new FactorialQuestion() { Id = 1 },
                 new AverageQuestion() { Id = 2 },
-                new FrequenceQuestion() { Id = 3 }
+                new FrequenceQuestion() { Id = 3 },
+                new LargestQuestion() { Id = 4 }
+
             };
 
             var quizManager = new QuizManager(questions, sessionManager);

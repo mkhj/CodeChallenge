@@ -1,4 +1,53 @@
 ﻿<Properties StartupConfiguration="{D06BF056-3ED5-4A8A-9761-0313B6169CBD}|https">
   <MonoDevelop.Ide.ItemProperties.CodeChallenge.Web PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="CodeChallenge.Core/Compiler/Runner.cs">
+    <Files>
+      <File FileName="CodeChallenge.Web/Controllers/HomeController.cs" Line="6" Column="30" />
+      <File FileName="CodeChallenge.Web/Helpers/QuizSessionManager.cs" />
+      <File FileName="CodeChallenge.Core/TaskManager.cs" />
+      <File FileName="CodeChallenge.Core/Compiler/Runner.cs" Line="15" Column="68" />
+      <File FileName="CodeChallenge.Core/Compiler/Compiler.cs" Line="29" Column="1" />
+      <File FileName="CodeChallenge.Web/Views/Home/Index.cshtml" />
+      <File FileName="CodeChallenge.Core/Questions/_BaseQuestion.cs" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="CodeChallenge" expanded="True">
+            <Node name="CodeChallenge.Core" expanded="True">
+              <Node name="Compiler" expanded="True">
+                <Node name="Runner.cs" selected="True" />
+              </Node>
+              <Node name="Helpers" expanded="True" />
+              <Node name="Questions" expanded="True" />
+            </Node>
+            <Node name="CodeChallenge.Web" expanded="True">
+              <Node name="Controllers" expanded="True" />
+              <Node name="Extensions" expanded="True" />
+              <Node name="Helpers" expanded="True" />
+              <Node name="Views" expanded="True">
+                <Node name="Home" expanded="True" />
+                <Node name="Shared" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>taskManager</Value>
+          <Value>_sessionManager</Value>
+          <Value>_sessionManager.GetObject&lt;bool&gt;(QUIZ_IN_PROGRESS_SESSION_KEY)</Value>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="../../../CodeChallenge.Web/Controllers/HomeController.cs" line="26" column="13" endLine="26" endColumn="24" offsetX="-1" offsetY="-1" expression="QuizManager" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
 </Properties>
